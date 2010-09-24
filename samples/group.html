@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>Raphael Group Plugin Example</title>
+	<style>
+		.canvas {
+			border: solid black 1px;
+		}
+		#set {
+			float: right;
+		}
+	</style>
+</head>
+<body>
+	
+	<div id='group'>
+		<button class="bigger">bigger</button>
+		<button class="smaller">smaller</button>
+		<button class="rotate-rt">Rotate Clockwise</button>
+		<button class="rotate-lf">Rotate Counter</button>
+		<div id="groupCanvas"></div>
+	</div>
+	
+	<script type="text/javascript" src="http://yui.yahooapis.com/combo?3.2.0/build/yui/yui-debug.js"></script>		
+	<script type="text/javascript" src="../../yui/yui3-gallery/src/gallery-raphael/build_tmp/gallery-raphael-debug.js"></script>
+	
+	<script>
+		YUI({filter: 'debug', useConsole: true}).use('gallery-raphael', function(Y) {
+			
+			Y.Raphael({type:'raw'}).use(['../raphael.group.js'], function(Raphael) {
+				
+				var rr = Raphael('groupCanvas', 1000, 1000);
+				var groupScale = 1, groupStep = .1, groupRotation = 0, groupRotationStep = 10;
+				rect = rr.rect(160,200, 200,200);
+				rect.attr({fill:'red', stroke:'black'});
+				
+				circ = rr.circle(340, 200, 50);
+				circ.attr({fill:'yellow', stroke:'black'});
+				
+				var sset = rr.group();
+				sset.push(rect).push(circ);
+				
+				var i=0, rects = [];
+				for (; i<10; i++) {
+					rects.push(rr.rect(0, 40*i, 40*i, 20).attr({fill: 'red', stroke: 'yellow'}));
+				}
+				
+				Y.Array.each(rects, function(theRect) {
+					theRect.$node.on('click', function() {
+						theRect.remove()
+					});
+					sset.push(theRect);
+				});				
+				
+				Y.one('#group .bigger').on('click', function() {
+					groupScale = groupScale + groupStep;
+					sset.scale(groupScale);
+				});
+
+				Y.one('#group .smaller').on('click', function() {
+					groupScale = groupScale - groupStep;
+					sset.scale(groupScale);
+				});
+				
+				Y.one('#group .rotate-rt').on('click', function() {
+					groupRotation = groupRotation + groupRotationStep;
+					sset.rotate(groupRotation);
+				});
+
+				Y.one('#group .rotate-lf').on('click', function() {
+					groupRotation = groupRotation - groupRotationStep;
+					sset.rotate(groupRotation);
+				});
+				
+			});
+			
+		});
+	</script>
+	
+</body>
+</html>

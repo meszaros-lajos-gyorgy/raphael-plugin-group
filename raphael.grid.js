@@ -1,3 +1,7 @@
+/*
+ * This was swiped from the RaphaelJS example here: http://raphaeljs.com/analytics.js and modified
+ * for my own purposes
+ */
 Raphael.fn.drawGrid = function(x, y, w, h, wv, hv, color) {
     color = color || '#000';
     var rnd = Math.round,
