@@ -46,8 +46,18 @@ Raphael.fn.group = function() {
 				group.setAttribute('transform', updateRotation(transform, deg));
 			},
 			push: function(it) {
-				group.appendChild(it.node);
-				set.push(it);
+				var i=0;
+				function pushOneRaphaelVector(it){
+					group.appendChild(it.node);
+					set.push(it);
+				}
+				if (it.type === 'set') {
+					for (; i< it.length; i++) {
+						pushOneRaphaelVector(it[i]);
+					}
+				} else {
+					pushOneRaphaelVector(it);
+				}
 				return this;
 			},
 			getBBox: function() {

@@ -31,28 +31,32 @@
 			
 			Y.Raphael({type:'raw'}).use(['../raphael.group.js'], function(Raphael) {
 				
-				var rr = Raphael('groupCanvas', 1000, 1000);
+				var r = Raphael('groupCanvas', 1000, 1000);
 				var groupScale = 1, groupStep = .1, groupRotation = 0, groupRotationStep = 10;
-				rect = rr.rect(160,200, 200,200);
+				rect = r.rect(160,200, 200,200);
 				rect.attr({fill:'red', stroke:'black'});
 				
-				circ = rr.circle(340, 200, 50);
+				circ = r.circle(340, 200, 50);
 				circ.attr({fill:'yellow', stroke:'black'});
 				
-				var sset = rr.group();
+				var sset = r.group();
 				sset.push(rect).push(circ);
 				
-				var i=0, rects = [];
+				var i=0, rects = [], rectSet = r.set(), onerect;
 				for (; i<10; i++) {
-					rects.push(rr.rect(0, 40*i, 40*i, 20).attr({fill: 'red', stroke: 'yellow'}));
+					onerect = r.rect(0, 40*i, 40*i, 20).attr({fill: 'red', stroke: 'yellow'});
+					rects.push(onerect);
+					rectSet.push(onerect); // just for an example of pushing a set into a group later
 				}
 				
 				Y.Array.each(rects, function(theRect) {
 					theRect.$node.on('click', function() {
 						theRect.remove()
 					});
-					sset.push(theRect);
-				});				
+				});
+				
+				sset.push(rectSet);
+				
 				
 				Y.one('#group .bigger').on('click', function() {
 					groupScale = groupScale + groupStep;
