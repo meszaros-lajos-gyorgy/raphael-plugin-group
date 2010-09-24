@@ -13,7 +13,9 @@
 	</style>
 </head>
 <body>
-	
+	<h1>Demo of RaphaelJS Group Plugin</h1>
+	<p>This adds SVG group-like support. See <a href="http://www.w3.org/TR/SVG/struct.html#Groups">here</a> for details.</p>
+	<p>This demo is also using the <a href="http://yuilibrary.com/gallery/show/raphael">YUI3 RaphaelJS Module</a>, which mixes in <a href="http://developer.yahoo.com/yui/3/api/EventTarget.html">Y.EventTarget</a> into each vector.</p>
 	<div id='group'>
 		<button class="bigger">bigger</button>
 		<button class="smaller">smaller</button>
@@ -23,10 +25,9 @@
 	</div>
 	
 	<script type="text/javascript" src="http://yui.yahooapis.com/combo?3.2.0/build/yui/yui-debug.js"></script>		
-	<script type="text/javascript" src="../../yui/yui3-gallery/src/gallery-raphael/build_tmp/gallery-raphael-debug.js"></script>
 	
 	<script>
-		YUI({filter: 'debug', useConsole: true}).use('gallery-raphael', function(Y) {
+		YUI({gallery: 'gallery-2010.09.22-20-15'}).use('gallery-raphael', function(Y) {
 			
 			Y.Raphael({type:'raw'}).use(['../raphael.group.js'], function(Raphael) {
 				
