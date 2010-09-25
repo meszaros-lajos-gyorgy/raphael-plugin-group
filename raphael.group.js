@@ -45,19 +45,19 @@ Raphael.fn.group = function() {
 				var transform = group.getAttribute('transform');
 				group.setAttribute('transform', updateRotation(transform, deg));
 			},
-			push: function(it) {
-				var i=0;
+			push: function(item) {
 				function pushOneRaphaelVector(it){
-					group.appendChild(it.node);
-					set.push(it);
-				}
-				if (it.type === 'set') {
-					for (; i< it.length; i++) {
-						pushOneRaphaelVector(it[i]);
+					var i;
+					if (it.type === 'set') {
+						for (i=0; i< it.length; i++) {
+							pushOneRaphaelVector(it[i]);
+						}
+					} else {
+						group.appendChild(it.node);
+						set.push(it);
 					}
-				} else {
-					pushOneRaphaelVector(it);
 				}
+				pushOneRaphaelVector(item)
 				return this;
 			},
 			getBBox: function() {
