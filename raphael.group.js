@@ -3,13 +3,13 @@ Raphael.fn.group = function() {
 	var r = this,
 		cfg = (arguments[0] instanceof Array) ? {} : arguments[0],
 		items = (arguments[0] instanceof Array) ? arguments[0] : arguments[1];
-    
-    function Group(cfg, items) {
-        var inst,
+	
+	function Group(cfg, items) {
+		var inst,
 			set = r.set(items),
 			group = r.raphael.vml ? 
-					document.createElement("group") : 
-					document.createElementNS("http://www.w3.org/2000/svg", "g");
+				document.createElement("group") : 
+				document.createElementNS("http://www.w3.org/2000/svg", "g");
 		
 		r.canvas.appendChild(group);
 		
@@ -68,8 +68,8 @@ Raphael.fn.group = function() {
 		};
 				
 		return inst;
-    }
-    
-    return Group(cfg, items);
+	}
+	
+	return Group(cfg, items);
 
 };
