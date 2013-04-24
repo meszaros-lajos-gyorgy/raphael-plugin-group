@@ -13,15 +13,15 @@ Raphael.fn.group = function() {
 		
 		r.canvas.appendChild(group);
 		
-		function updateScale(transform, scale) {
-			var scaleString = 'scale(' + scale + ')';
+		function updateScale(transform, scaleX, scaleY) {
+			var scaleString = 'scale(' + scaleX + ' ' + scaleY + ')';
 			if (!transform) {
 				return scaleString;
 			}
 			if (transform.indexOf('scale(') < 0) {
 				return transform + ' ' + scaleString;
 			}
-			return transform.replace(/scale\(-?[0-9]+(\.[0-9][0-9]*)?\)/, scaleString);
+			return transform.replace(/scale\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, scaleString);
 		}
 		
 		function updateRotation(transform, rotation) {
@@ -34,11 +34,19 @@ Raphael.fn.group = function() {
 			}
 			return transform.replace(/rotate\(-?[0-9]+(\.[0-9][0-9]*)?\)/, rotateString);
 		}
+
+		function updateTranslation(transform, x, y) {
+			var translateString = 'translate(' + x + ' ' + y + ')';
+			if (!transform) {
+				return translateString;
+			}
+			return transform.replace(/translate\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, translateString);
+		}
 		
 		inst = {
-			scale: function (newScale) {
+			scale: function (newScaleX, newScaleY) {
 				var transform = group.getAttribute('transform');
-				group.setAttribute('transform', updateScale(transform, newScale));
+				group.setAttribute('transform', updateScale(transform, newScaleX, newScaleY));
 				return this;
 			},
 			rotate: function(deg) {
@@ -58,6 +66,11 @@ Raphael.fn.group = function() {
 					}
 				}
 				pushOneRaphaelVector(item)
+				return this;
+			},
+			translate: function(newTranslateX, newTranslateY) {
+				var transform = group.getAttribute('transform');
+				group.setAttribute('transform', updateTranslation(transform, newTranslateX, newTranslateY));
 				return this;
 			},
 			getBBox: function() {
