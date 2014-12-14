@@ -45,6 +45,9 @@ Raphael.fn.group = function() {
 		
 		inst = {
 			scale: function (newScaleX, newScaleY) {
+				if(newScaleY == undefined){
+					newScaleY = newScaleX;
+				}
 				var transform = group.getAttribute('transform');
 				group.setAttribute('transform', updateScale(transform, newScaleX, newScaleY));
 				return this;
