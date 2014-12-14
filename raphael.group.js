@@ -89,12 +89,20 @@ Raphael.fn.group = function() {
 						ly = dy + oy;
 						inst.translate(lx, ly);
 					},
+					startFnc = function(){
+						var transform = group.getAttribute('transform').match(/translate\(([^)]*)\)/);
+						if(transform[1] !== undefined){
+							var t = transform[1].split(" ");
+							ox = parseInt(t[0]);
+							oy = parseInt(t[1]);
+						}
+					},
 					endFnc = function(){
 						ox = lx;
 						oy = ly;
 					}
 				;
-				set.drag(moveFnc, undefined, endFnc);
+				set.drag(moveFnc, startFnc, endFnc);
 				return this;
 			}
 		};
