@@ -77,7 +77,26 @@ Raphael.fn.group = function() {
 				return set.getBBox();
 			},
 			type: 'group',
-			node: group
+			node: group,
+			draggable: function() {
+				var
+					lx = 0,
+					ly = 0,
+					ox = 0,
+					oy = 0,
+					moveFnc = function(dx, dy){
+						lx = dx + ox;
+						ly = dy + oy;
+						inst.translate(lx, ly);
+					},
+					endFnc = function(){
+						ox = lx;
+						oy = ly;
+					}
+				;
+				set.drag(moveFnc, undefined, endFnc);
+				return this;
+			}
 		};
 				
 		return inst;
