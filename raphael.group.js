@@ -1,15 +1,18 @@
-Raphael.fn.group = function() {
-
-	var r = this,
-		cfg = (arguments[0] instanceof Array) ? {} : arguments[0],
-		items = (arguments[0] instanceof Array) ? arguments[0] : arguments[1];
+Raphael.fn.group = function(){
+	var
+		r		= this,
+		cfg		= (arguments[0] instanceof Array) ? {} : arguments[0],
+		items	= arguments[(arguments[0] instanceof Array) ? 0 : 1]
+	;
 	
-	function Group(cfg, items) {
-		var inst,
-			set = r.set(items),
-			group = r.raphael.vml ? 
-				document.createElement("group") : 
-				document.createElementNS("http://www.w3.org/2000/svg", "g");
+	function Group(cfg, items){
+		var
+			inst,
+			d			= document,
+			set			= r.set(items),
+			group		= r.raphael.vml ? d.createElement("group") : d.createElementNS("http://www.w3.org/2000/svg", "g"),
+			dragSpeed	= 1
+		;
 		
 		r.canvas.appendChild(group);
 		
@@ -81,15 +84,15 @@ Raphael.fn.group = function() {
 			},
 			type: 'group',
 			node: group,
-			draggable: function() {
+			draggable: function(){
 				var
 					lx = 0,
 					ly = 0,
 					ox = 0,
 					oy = 0,
 					moveFnc = function(dx, dy){
-						lx = dx + ox;
-						ly = dy + oy;
+						lx = (dx * dragSpeed) + ox;
+						ly = (dy * dragSpeed) + oy;
 						inst.translate(lx, ly);
 					},
 					startFnc = function(){
@@ -107,12 +110,17 @@ Raphael.fn.group = function() {
 				;
 				set.drag(moveFnc, startFnc, endFnc);
 				return this;
+			},
+			setDragSpeed: function(s){
+				dragSpeed = s;
+			},
+			getDragSpeed: function(){
+				return dragSpeed;
 			}
 		};
-				
+		
 		return inst;
 	}
 	
 	return Group(cfg, items);
-
 };
