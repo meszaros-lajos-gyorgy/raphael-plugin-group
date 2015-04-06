@@ -43,6 +43,9 @@ Raphael.fn.group = function(){
 			if (!transform) {
 				return translateString;
 			}
+			if (transform.indexOf('translate(') < 0) {
+				return transform + ' ' + translateString;
+			}
 			return transform.replace(/translate\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, translateString);
 		}
 		
