@@ -99,11 +99,13 @@ Raphael.fn.group = function(){
 						inst.translate(lx, ly);
 					},
 					startFnc = function(){
-						var transform = group.getAttribute('transform').match(/translate\(([^)]*)\)/);
-						if(transform[1] !== undefined){
-							var t = transform[1].split(" ");
-							ox = parseInt(t[0]);
-							oy = parseInt(t[1]);
+						if(group.hasAttribute('transform')){
+							var transform = group.getAttribute('transform').match(/translate\(([^)]*)\)/);
+							if(transform[1] !== undefined){
+								var t = transform[1].split(" ");
+								ox = parseInt(t[0]);
+								oy = parseInt(t[1]);
+							}
 						}
 					},
 					endFnc = function(){
