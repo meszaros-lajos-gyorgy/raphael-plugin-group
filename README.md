@@ -1,4 +1,6 @@
-Created by: https://github.com/rhyolight
+# RaphaelJS plugins
+
+Original notes by: https://github.com/rhyolight
 
 This is an updated version of the Raphael.group.js plugin. It adds support for moving groups and scaling the X and Y axis independently. 
 

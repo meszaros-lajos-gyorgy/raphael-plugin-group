@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>RaphaelJS Group plugin example</title>
+	<meta charset="utf-8" />
+	
+	<script src="utils.js"></script>
+	<script src="https://raw.githubusercontent.com/DmitryBaranovskiy/raphael/master/raphael.min.js"></script>
+	<script src="../raphael.group.min.js"></script>
+	
+	<script>/*<![CDATA[*/
+dom.on(window, 'load', function(){
+	'use strict';
+	
+	var groupScale        = 1;
+	var groupStep         = 0.1;
+	var groupRotation     = 0;
+	var groupRotationStep = 10;
+	
+	var r    = Raphael('canvas', 1000, 1000);
+	var rect = r.rect(160, 200, 200, 200).attr({fill:'red', stroke:'black'});
+	var circ = r.circle(340, 200, 50).attr({fill:'yellow', stroke:'black'});
+	var g    = r.group().push(rect).push(circ);
+	
+	var i = 10;
+	var rectSet = r.set();
+	var rect;
+	while(i--){
+		rect = r.rect(0, 40 * i, 40 * i, 20).attr({fill: 'red', stroke: 'yellow'});
+		dom.on(rect.node, 'click', function(){
+			this.remove();
+		});
+		rectSet.push(rect); // just for an example of pushing a set into a group later
+	}
+	
+	g.push(rectSet);
+	
+	function updateScale(){
+		g.scale(groupScale);
+	}
+	
+	function updateRotation(){
+		g.rotate(groupRotation);
+	}
+	
+	dom.on(document.getElementById('increase-size'), 'click', function(){
+		groupScale = groupScale + groupStep;
+		updateScale();
+	});
+	dom.on(document.getElementById('decrease-size'), 'click', function(){
+		groupScale = groupScale - groupStep;
+		updateScale();
+	});
+	dom.on(document.getElementById('rotate-clockwise'), 'click', function(){
+		groupRotation = groupRotation + groupRotationStep;
+		updateRotation();
+	});
+	dom.on(document.getElementById('rotate-counter-clockwise'), 'click', function(){
+		groupRotation = groupRotation - groupRotationStep;
+		updateRotation();
+	});
+	dom.on(document.getElementById('make-it-draggable'), 'click', function(){
+		g.draggable();
+	});
+	dom.on(document.getElementById('increase-drag-speed'), 'click', function(){
+		g.setDragSpeed(g.getDragSpeed() + 1);
+	});
+	dom.on(document.getElementById('decrease-drag-speed'), 'click', function(){
+		g.setDragSpeed(g.getDragSpeed() - 1);
+	});
+});
+	/*]]>*/</script>
+</head>
+<body>
+	<h1>Demo of <a href="https://github.com/meszaros-lajos-gyorgy/Raphael-Plugins">RaphaelJS Group Plugin</a></h1>
+	<p>This adds SVG group-like support. See <a href="http://www.w3.org/TR/SVG/struct.html#Groups">here</a> for details.</p>
+	<nav>
+		<button id="increase-size">increase size</button>
+		<button id="decrease-size">decrease size</button>
+		<button id="rotate-clockwise">rotate clockwise</button>
+		<button id="rotate-counter-clockwise">rotate counter-clockwise</button>
+		<button id="make-it-draggable">make it draggable</button>
+		<button id="increase-drag-speed">increase drag speed</button>
+		<button id="decrease-drag-speed">decrease drag speed</button>
+	</nav>
+	<div id="canvas"></div>
+</body>
+</html>
