@@ -42,6 +42,15 @@ var utils, dom;
 			
 			element[oldIE ? 'detachEvent' : 'removeEventListener'].apply(element, args);
 			return this;
+		},
+		text : function(element, content){
+			var method = 'textContent' in element ? 'textContent' : 'innerText';
+			if(content){
+				element[method] = content;
+				return this;
+			}else{
+				return element[method];
+			}
 		}
 	};
 })();
