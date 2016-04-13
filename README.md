@@ -12,6 +12,6 @@ which is more lightweight, produced by the same author, has a similar syntax and
 RaphaelJS tries to even out the differences between SVG and the old, outdated Microsoft Vector Markup Language (VML).
 It only supports features, which are present in both SVG and VML, and grouping is only supported in SVG.
 
-SnapJS homepage: http://snapsvg.io/
+SnapSVG homepage: http://snapsvg.io/
 
 Updated link to RaphaelJS project: https://github.com/DmitryBaranovskiy/raphael
