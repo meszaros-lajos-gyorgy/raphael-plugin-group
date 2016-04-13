@@ -2,7 +2,7 @@ This is an updated version of the Raphael.group.js plugin. It adds support for m
 
 WARNING: These plugins were not tested in IE, and I don't care.
 
-These are plugins I've created for the RaphaelJS library (raphaeljs.com) for my own personal use. Feel free to use them as well.
+These are plugins I've created for the RaphaelJS library (http://raphaeljs.com/ - _link is outdated, see updated link below_) for my own personal use. Feel free to use them as well.
 
 # Update!
 
