@@ -5,17 +5,8 @@ if (!Array.isArray) {
 	};
 }
 
-Raphael.fn.group = function(/*items:[]*, config:{}*/){
+(function(){
 	'use strict';
-	
-	var hasItems  = Array.isArray(arguments[0]);
-	var config    = hasItems ? {} : arguments[0];
-	var items     = arguments[hasItems ? 0 : 1];
-	var set       = this.set(items);
-	var group     = this.raphael.vml ? document.createElement('group') : document.createElementNS('http://www.w3.org/2000/svg', 'g');
-	var dragSpeed = 1;
-	
-	// -----------------
 	
 	function updateScale(transform, scaleX, scaleY) {
 		var scaleString = 'scale(' + scaleX + ' ' + scaleY + ')';
@@ -38,7 +29,7 @@ Raphael.fn.group = function(/*items:[]*, config:{}*/){
 		}
 		return transform.replace(/rotate\(-?[0-9]+(\.[0-9][0-9]*)?\)/, rotateString);
 	}
-
+	
 	function updateTranslation(transform, x, y) {
 		var translateString = 'translate(' + x + ' ' + y + ')';
 		if (!transform) {
@@ -50,25 +41,30 @@ Raphael.fn.group = function(/*items:[]*, config:{}*/){
 		return transform.replace(/translate\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, translateString);
 	}
 	
-	// -----------------
+	function Group(raphael, items){
+		var group = raphael.raphael.vml ? document.createElement('group') : document.createElementNS('http://www.w3.org/2000/svg', 'g');
+		raphael.canvas.appendChild(group);
+		
+		this.set       = raphael.set(items);
+		this.dragSpeed = 1;
+		this.node      = group;
+		this.type      = 'group';
+	}
 	
-	this.canvas.appendChild(group);
-	
-	return {
-		type: 'group',
-		node: group,
+	Group.prototype = {
 		scale: function (newScaleX, newScaleY) {
 			if(newScaleY == undefined){
 				newScaleY = newScaleX;
 			}
-			group.setAttribute('transform', updateScale(group.getAttribute('transform'), newScaleX, newScaleY));
+			this.node.setAttribute('transform', updateScale(this.node.getAttribute('transform'), newScaleX, newScaleY));
 			return this;
 		},
 		rotate: function(deg) {
-			group.setAttribute('transform', updateRotation(group.getAttribute('transform'), deg));
+			this.node.setAttribute('transform', updateRotation(this.node.getAttribute('transform'), deg));
 			return this;
 		},
 		push: function(item) {
+			var self = this;
 			function pushOneRaphaelVector(it){
 				var i;
 				if (it.type === 'set') {
@@ -76,19 +72,19 @@ Raphael.fn.group = function(/*items:[]*, config:{}*/){
 						pushOneRaphaelVector(it[i]);
 					}
 				} else {
-					group.appendChild(it.node);
-					set.push(it);
+					self.node.appendChild(it.node);
+					self.set.push(it);
 				}
 			}
 			pushOneRaphaelVector(item)
 			return this;
 		},
 		translate: function(newTranslateX, newTranslateY) {
-			group.setAttribute('transform', updateTranslation(group.getAttribute('transform'), newTranslateX, newTranslateY));
+			this.node.setAttribute('transform', updateTranslation(this.node.getAttribute('transform'), newTranslateX, newTranslateY));
 			return this;
 		},
 		getBBox: function() {
-			return set.getBBox();
+			return this.set.getBBox();
 		},
 		draggable: function(){
 			var lx = 0;
@@ -98,13 +94,13 @@ Raphael.fn.group = function(/*items:[]*, config:{}*/){
 			var self = this;
 			
 			function onMove(dx, dy){
-				lx = (dx * dragSpeed) + ox;
-				ly = (dy * dragSpeed) + oy;
+				lx = (dx * self.dragSpeed) + ox;
+				ly = (dy * self.dragSpeed) + oy;
 				self.translate(lx, ly);
 			}
 			function onStart(){
-				if(group.hasAttribute('transform')){
-					var transform = group.getAttribute('transform').match(/translate\(([^)]*)\)/);
+				if(self.node.hasAttribute('transform')){
+					var transform = self.node.getAttribute('transform').match(/translate\(([^)]*)\)/);
 					if(transform && transform[1] !== undefined){
 						var t = transform[1].split(' ');
 						ox = parseInt(t[0]);
@@ -117,15 +113,16 @@ Raphael.fn.group = function(/*items:[]*, config:{}*/){
 				oy = ly;
 			}
 			
-			set.drag(onMove, onStart, onEnd);
+			this.set.drag(onMove, onStart, onEnd);
 			return this;
-		},
-		setDragSpeed: function(s){
-			dragSpeed = s;
-			return this;
-		},
-		getDragSpeed: function(){
-			return dragSpeed;
 		}
 	};
-};
+	
+	Raphael.fn.group = function(/*items:[]*, config:{}*/){
+		var hasItems  = Array.isArray(arguments[0]);
+		var config    = hasItems ? {} : arguments[0];
+		var items     = arguments[hasItems ? 0 : 1];
+		
+		return new Group(this, items);
+	};
+})();

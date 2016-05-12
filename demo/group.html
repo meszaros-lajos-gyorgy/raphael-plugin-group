@@ -96,7 +96,7 @@ dom.on(window, 'load', function(){
 			'size: ' + groupScale
 			+ ' | rotation degree: ' + groupRotation
 			+ ' | draggable: ' + (draggable ? 'yes' : 'no')
-			+ (draggable ? ' | drag speed: ' + g.getDragSpeed() : '')
+			+ (draggable ? ' | drag speed: ' + g.dragSpeed : '')
 		);
 	}
 	
@@ -128,11 +128,11 @@ dom.on(window, 'load', function(){
 		}
 	});
 	dom.on(document.getElementById('increase-drag-speed'), 'click', function(){
-		g.setDragSpeed(g.getDragSpeed() * 2);
+		g.dragSpeed *= 2;
 		updateInfo();
 	});
 	dom.on(document.getElementById('decrease-drag-speed'), 'click', function(){
-		g.setDragSpeed(g.getDragSpeed() / 2);
+		g.dragSpeed /= 2;
 		updateInfo();
 	});
 	
