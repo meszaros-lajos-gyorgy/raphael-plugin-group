@@ -1,41 +1,58 @@
 (function() {
 	'use strict';
 	
-	// TODO:
-	// methods like updateScale should contain the update of the element too, not just the calculation
+	// TODO: fix transformation for VML
 	// VML documentation: https://www.w3.org/TR/NOTE-VML
 	
-	function updateScale(privates, transform, scaleX, scaleY) {
+	function updateScale(privates, scaleX, scaleY) {
+		var transform = this.node.getAttribute('transform');
+		
+		var value = '';
 		var scaleString = 'scale(' + scaleX + ' ' + scaleY + ')';
+		
 		if (!transform) {
-			return scaleString;
+			value = scaleString;
+		}else if (transform.indexOf('scale(') === -1) {
+			value = transform + ' ' + scaleString;
+		}else{
+			value = transform.replace(/scale\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, scaleString);
 		}
-		if (transform.indexOf('scale(') !== -1) {
-			return transform + ' ' + scaleString;
-		}
-		return transform.replace(/scale\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, scaleString);
+		
+		this.node.setAttribute('transform', value);
 	}
 	
-	function updateRotation(privates, transform, rotation) {
+	function updateRotation(privates, rotation) {
+		var transform = this.node.getAttribute('transform');
+		
+		var value = '';
 		var rotateString = 'rotate(' + rotation + ')';
+		
 		if (!transform) {
-			return rotateString;
+			value = rotateString;
+		}else if (transform.indexOf('rotate(') === -1) {
+			value = transform + ' ' + rotateString;
+		}else{
+			value = transform.replace(/rotate\(-?[0-9]+(\.[0-9][0-9]*)?\)/, rotateString);
 		}
-		if (transform.indexOf('rotate(') !== -1) {
-			return transform + ' ' + rotateString;
-		}
-		return transform.replace(/rotate\(-?[0-9]+(\.[0-9][0-9]*)?\)/, rotateString);
+		
+		this.node.setAttribute('transform', value);
 	}
 	
-	function updateTranslation(privates, transform, x, y) {
+	function updateTranslation(privates, x, y) {
+		var transform = this.node.getAttribute('transform');
+		
+		var value = '';
 		var translateString = 'translate(' + x + ' ' + y + ')';
+		
 		if (!transform) {
-			return translateString;
+			value = translateString;
+		}else if (transform.indexOf('translate(') === -1) {
+			value = transform + ' ' + translateString;
+		}else{
+			value = transform.replace(/translate\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, translateString);
 		}
-		if (transform.indexOf('translate(') !== -1) {
-			return transform + ' ' + translateString;
-		}
-		return transform.replace(/translate\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, translateString);
+		
+		this.node.setAttribute('transform', value);
 	}
 	
 	function onMove(privates, dx, dy) {
@@ -108,22 +125,22 @@
 			if (newScaleY == undefined) {
 				newScaleY = newScaleX;
 			}
-			this.node.setAttribute('transform', privates.updateScale(this.node.getAttribute('transform'), newScaleX, newScaleY));
+			privates.updateScale(newScaleX, newScaleY);
 			return this;
 		},
 		rotate: function(deg) {
 			var privates = _.get(this);
-			this.node.setAttribute('transform', privates.updateRotation(this.node.getAttribute('transform'), deg));
+			privates.updateRotation(deg);
+			return this;
+		},
+		translate: function(newTranslateX, newTranslateY) {
+			var privates = _.get(this);
+			privates.updateTranslation(newTranslateX, newTranslateY);
 			return this;
 		},
 		push: function(item) {
 			var privates = _.get(this);
 			privates.pushOneRaphaelVector(item);
-			return this;
-		},
-		translate: function(newTranslateX, newTranslateY) {
-			var privates = _.get(this);
-			this.node.setAttribute('transform', privates.updateTranslation(this.node.getAttribute('transform'), newTranslateX, newTranslateY));
 			return this;
 		},
 		getBBox: function() {
