@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 	
-	function updateScale(transform, scaleX, scaleY) {
+	function updateScale(privates, transform, scaleX, scaleY) {
 		var scaleString = 'scale(' + scaleX + ' ' + scaleY + ')';
 		if (!transform) {
 			return scaleString;
@@ -12,7 +12,7 @@
 		return transform.replace(/scale\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, scaleString);
 	}
 	
-	function updateRotation(transform, rotation) {
+	function updateRotation(privates, transform, rotation) {
 		var rotateString = 'rotate(' + rotation + ')';
 		if (!transform) {
 			return rotateString;
@@ -23,7 +23,7 @@
 		return transform.replace(/rotate\(-?[0-9]+(\.[0-9][0-9]*)?\)/, rotateString);
 	}
 	
-	function updateTranslation(transform, x, y) {
+	function updateTranslation(privates, transform, x, y) {
 		var translateString = 'translate(' + x + ' ' + y + ')';
 		if (!transform) {
 			return translateString;
@@ -34,30 +34,33 @@
 		return transform.replace(/translate\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, translateString);
 	}
 	
-	function onMove(dx, dy) {
-		this.lx = (dx * this.dragSpeed) + this.ox;
-		this.ly = (dy * this.dragSpeed) + this.oy;
-		this.translate(this.lx, this.ly);
+	function onMove(privates, dx, dy) {
+		privates.lx = (dx * this.dragSpeed) + privates.ox;
+		privates.ly = (dy * this.dragSpeed) + privates.oy;
+		this.translate(privates.lx, privates.ly);
 	}
-	function onStart() {
+	
+	function onStart(privates) {
 		if (this.node.hasAttribute('transform')) {
 			var transform = this.node.getAttribute('transform').match(/translate\(([^)]*)\)/);
 			if (transform && transform[1] !== undefined) {
 				var t = transform[1].split(' ');
-				this.ox = parseInt(t[0]);
-				this.oy = parseInt(t[1]);
+				privates.ox = parseInt(t[0]);
+				privates.oy = parseInt(t[1]);
 			}
 		}
 	}
-	function onEnd() {
-		this.ox = this.lx;
-		this.oy = this.ly;
+	
+	function onEnd(privates) {
+		privates.ox = privates.lx;
+		privates.oy = privates.ly;
 	}
-	function pushOneRaphaelVector(item) {
+	
+	function pushOneRaphaelVector(privates, item) {
 		var i;
 		if (item.type === 'set') {
 			for (i = 0; i < item.length; i++) {
-				pushOneRaphaelVector.apply(this, [item[i]]);
+				pushOneRaphaelVector.apply(this, [privates, item[i]]);
 			}
 		} else {
 			this.node.appendChild(item.node);
@@ -66,6 +69,8 @@
 	}
 	
 	// -----------------
+	
+	var _ = new WeakMap();
 	
 	function Group(raphael, items) {
 		var group = raphael.raphael.vml ? document.createElement('group') : document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -76,42 +81,54 @@
 		this.node = group;
 		this.type = 'group';
 		
-		this.lx = 0;
-		this.ly = 0;
-		this.ox = 0;
-		this.oy = 0;
+		var privates = {
+			lx : 0,
+			ly : 0,
+			ox : 0,
+			oy : 0
+		};
+		privates.onMove = onMove.bind(this, privates);
+		privates.onStart = onStart.bind(this, privates);
+		privates.onEnd = onEnd.bind(this, privates);
+		privates.pushOneRaphaelVector = pushOneRaphaelVector.bind(this, privates);
+		privates.updateScale = updateScale.bind(this, privates);
+		privates.updateRotation = updateRotation.bind(this, privates);
+		privates.updateTranslation = updateTranslation.bind(this, privates);
 		
-		this.onMove = onMove.bind(this);
-		this.onStart = onStart.bind(this);
-		this.onEnd = onEnd.bind(this);
-		this.pushOneRaphaelVector = pushOneRaphaelVector.bind(this);
+		_.set(this, privates);
 	}
 	
 	Group.prototype = {
 		scale: function (newScaleX, newScaleY) {
+			var privates = _.get(this);
 			if (newScaleY == undefined) {
 				newScaleY = newScaleX;
 			}
-			this.node.setAttribute('transform', updateScale(this.node.getAttribute('transform'), newScaleX, newScaleY));
+			this.node.setAttribute('transform', privates.updateScale(this.node.getAttribute('transform'), newScaleX, newScaleY));
 			return this;
 		},
 		rotate: function(deg) {
-			this.node.setAttribute('transform', updateRotation(this.node.getAttribute('transform'), deg));
+			var privates = _.get(this);
+			this.node.setAttribute('transform', privates.updateRotation(this.node.getAttribute('transform'), deg));
 			return this;
 		},
 		push: function(item) {
-			this.pushOneRaphaelVector(item);
+			var privates = _.get(this);
+			privates.pushOneRaphaelVector(item);
 			return this;
 		},
 		translate: function(newTranslateX, newTranslateY) {
-			this.node.setAttribute('transform', updateTranslation(this.node.getAttribute('transform'), newTranslateX, newTranslateY));
+			var privates = _.get(this);
+			this.node.setAttribute('transform', privates.updateTranslation(this.node.getAttribute('transform'), newTranslateX, newTranslateY));
 			return this;
 		},
 		getBBox: function() {
+			var privates = _.get(this);
 			return this.set.getBBox();
 		},
 		draggable: function() {
-			this.set.drag(this.onMove, this.onStart, this.onEnd);
+			var privates = _.get(this);
+			this.set.drag(privates.onMove, privates.onStart, privates.onEnd);
 			return this;
 		}
 	};
