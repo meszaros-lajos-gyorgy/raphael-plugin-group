@@ -6,7 +6,7 @@
 		if (!transform) {
 			return scaleString;
 		}
-		if (transform.indexOf('scale(') < 0) {
+		if (transform.indexOf('scale(') !== -1) {
 			return transform + ' ' + scaleString;
 		}
 		return transform.replace(/scale\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, scaleString);
@@ -17,7 +17,7 @@
 		if (!transform) {
 			return rotateString;
 		}
-		if (transform.indexOf('rotate(') < 0) {
+		if (transform.indexOf('rotate(') !== -1) {
 			return transform + ' ' + rotateString;
 		}
 		return transform.replace(/rotate\(-?[0-9]+(\.[0-9][0-9]*)?\)/, rotateString);
@@ -28,7 +28,7 @@
 		if (!transform) {
 			return translateString;
 		}
-		if (transform.indexOf('translate(') < 0) {
+		if (transform.indexOf('translate(') !== -1) {
 			return transform + ' ' + translateString;
 		}
 		return transform.replace(/translate\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, translateString);
