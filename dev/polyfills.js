@@ -36,48 +36,50 @@ if (!Function.prototype.bind) {
 	};
 }
 
-// ES6 WeakMap shim (https://github.com/Polymer/WeakMap/blob/master/weakmap.js):
-if(typeof WeakMap === 'undefined'){
-	(function(){
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now#Polyfill
+if (!Date.now) {
+	Date.now = function now() {
+		return new Date().getTime();
+	};
+}
+
+// https://raw.githubusercontent.com/webcomponents/webcomponentsjs/master/src/WeakMap/WeakMap.js
+if (typeof WeakMap === 'undefined') {
+	(function() {
 		var defineProperty = Object.defineProperty;
 		var counter = Date.now() % 1e9;
 		
-		var WeakMap = function(){
+		var WeakMap = function() {
 			this.name = '__st' + (Math.random() * 1e9 >>> 0) + (counter++ + '__');
 		};
 		
 		WeakMap.prototype = {
-			set: function(key, value){
+			set: function(key, value) {
 				var entry = key[this.name];
-				if (entry && entry[0] === key){
+				if (entry && entry[0] === key) {
 					entry[1] = value;
-				}else{
-					defineProperty(key, this.name, {value: [key, value], writable: true});
+				} else {
+					if(window.attachEvent){
+						key[this.name] = [key, value];
+					}else{
+						defineProperty(key, this.name, {value: [key, value], writable: true});
+					}
 				}
 				return this;
 			},
-			get: function(key){
+			get: function(key) {
 				var entry;
-				return (
-					(entry = key[this.name]) && entry[0] === key
-					? entry[1]
-					: undefined
-				);
+				return (entry = key[this.name]) && entry[0] === key ? entry[1] : undefined;
 			},
-			delete: function(key){
+			'delete': function(key) {
 				var entry = key[this.name];
-				if(!entry){
-					return false;
-				}
-				var hasValue = entry[0] === key;
+				if (!entry || entry[0] !== key) return false;
 				entry[0] = entry[1] = undefined;
-				return hasValue;
+				return true;
 			},
-			has: function(key){
+			has: function(key) {
 				var entry = key[this.name];
-				if(!entry){
-					return false;
-				}
+				if (!entry) return false;
 				return entry[0] === key;
 			}
 		};

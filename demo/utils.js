@@ -6,6 +6,7 @@ var utils, dom;
 	// we need to be able to call window.attachEvent.apply in utils.on()
 	if(window.attachEvent && !window.attachEvent.apply){
 		window.attachEvent = Function.prototype.call.bind(window.attachEvent, window);
+		window.detachEvent = Function.prototype.call.bind(window.detachEvent, window);
 	}
 
 	utils = {
@@ -27,7 +28,6 @@ var utils, dom;
 			if(oldIE){
 				args = ['on' + args[0], args[1].bind(element)];
 			}
-			
 			element[oldIE ? 'attachEvent' : 'addEventListener'].apply(element, args);
 			return this;
 		},

@@ -46,10 +46,10 @@ h1 a:hover{
 }
 	/*]]>*/</style>
 	
-	<script src="../polyfills.min.js"></script>
+	<script src="../dev/polyfills.js"></script>
 	<script src="utils.js"></script>
 	<script src="https://raw.githubusercontent.com/DmitryBaranovskiy/raphael/master/raphael.min.js"></script>
-	<script src="../raphael.group.min.js"></script>
+	<script src="../dev/raphael.group.js"></script>
 	
 	<script>/*<![CDATA[*/
 dom.on(window, 'load', function(){
@@ -70,10 +70,15 @@ dom.on(window, 'load', function(){
 	var rectSet = r.set();
 	var rect;
 	while(i--){
-		rect = r.rect(0, 40 * i, 40 * i, 20).attr({fill: 'red', stroke: 'yellow'});
-		dom.on(rect.node, 'click', function(){
-			this.remove();
-		});
+		rect = r.rect(0, 40 * (i + 1), 40 * (i + 1), 20).attr({fill: 'red', stroke: 'yellow'});
+		
+		// remove() does not work with IE8
+		if(window.addEventListener){
+			dom.on(rect.node, 'click', function(){
+				this.remove();
+			});
+		}
+		
 		rectSet.push(rect); // just for an example of pushing a set into a group later
 	}
 	

@@ -1,6 +1,10 @@
 (function() {
 	'use strict';
 	
+	// TODO:
+	// methods like updateScale should contain the update of the element too, not just the calculation
+	// VML documentation: https://www.w3.org/TR/NOTE-VML
+	
 	function updateScale(privates, transform, scaleX, scaleY) {
 		var scaleString = 'scale(' + scaleX + ' ' + scaleY + ')';
 		if (!transform) {
