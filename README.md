@@ -20,3 +20,13 @@ It only supports features, which are present in both SVG and VML, and grouping i
 
 * [SnapSVG homepage](http://snapsvg.io/)
 * [RaphaelJS project](https://github.com/DmitryBaranovskiy/raphael)
+
+## Requirement
+
+Though **Raphael.group.js** may be working in a browser as old as IE8, it uses the following new ES5 and ES6 features:
+
+* [Array.prototype.isArray (ES5)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray)
+* [Function.prototype.bind (ES5)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)
+* [WeakMap (ES6)](https://developer.mozilla.org/hu/docs/Web/JavaScript/Reference/Global_Objects/WeakMap)
+
+The polyfills for these are not included in the raphael plugins themselves, but instead present in the **polyfills.min.js** file.

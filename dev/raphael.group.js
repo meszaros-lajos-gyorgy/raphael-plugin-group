@@ -133,7 +133,7 @@
 		}
 	};
 	
-	Raphael.fn.group = function(/*items:[]*, config:{}*/) {
+	Raphael.fn.group = function(/* items:[]*, config:{} */) {
 		var hasItems = Array.isArray(arguments[0]);
 		var config   = hasItems ? {} : arguments[0];
 		var items    = arguments[hasItems ? 0 : 1];
