@@ -1,11 +1,4 @@
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray#Polyfill
-if (!Array.isArray) {
-	Array.isArray = function(arg) {
-		return Object.prototype.toString.call(arg) === '[object Array]';
-	};
-}
-
-(function(){
+(function() {
 	'use strict';
 	
 	function updateScale(transform, scaleX, scaleY) {
@@ -41,19 +34,62 @@ if (!Array.isArray) {
 		return transform.replace(/translate\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, translateString);
 	}
 	
-	function Group(raphael, items){
+	function onMove(dx, dy) {
+		this.lx = (dx * this.dragSpeed) + this.ox;
+		this.ly = (dy * this.dragSpeed) + this.oy;
+		this.translate(this.lx, this.ly);
+	}
+	function onStart() {
+		if (this.node.hasAttribute('transform')) {
+			var transform = this.node.getAttribute('transform').match(/translate\(([^)]*)\)/);
+			if (transform && transform[1] !== undefined) {
+				var t = transform[1].split(' ');
+				this.ox = parseInt(t[0]);
+				this.oy = parseInt(t[1]);
+			}
+		}
+	}
+	function onEnd() {
+		this.ox = this.lx;
+		this.oy = this.ly;
+	}
+	function pushOneRaphaelVector(item) {
+		var i;
+		if (item.type === 'set') {
+			for (i = 0; i < item.length; i++) {
+				pushOneRaphaelVector.apply(this, [item[i]]);
+			}
+		} else {
+			this.node.appendChild(item.node);
+			this.set.push(item);
+		}
+	}
+	
+	// -----------------
+	
+	function Group(raphael, items) {
 		var group = raphael.raphael.vml ? document.createElement('group') : document.createElementNS('http://www.w3.org/2000/svg', 'g');
 		raphael.canvas.appendChild(group);
 		
-		this.set       = raphael.set(items);
+		this.set = raphael.set(items);
 		this.dragSpeed = 1;
-		this.node      = group;
-		this.type      = 'group';
+		this.node = group;
+		this.type = 'group';
+		
+		this.lx = 0;
+		this.ly = 0;
+		this.ox = 0;
+		this.oy = 0;
+		
+		this.onMove = onMove.bind(this);
+		this.onStart = onStart.bind(this);
+		this.onEnd = onEnd.bind(this);
+		this.pushOneRaphaelVector = pushOneRaphaelVector.bind(this);
 	}
 	
 	Group.prototype = {
 		scale: function (newScaleX, newScaleY) {
-			if(newScaleY == undefined){
+			if (newScaleY == undefined) {
 				newScaleY = newScaleX;
 			}
 			this.node.setAttribute('transform', updateScale(this.node.getAttribute('transform'), newScaleX, newScaleY));
@@ -64,19 +100,7 @@ if (!Array.isArray) {
 			return this;
 		},
 		push: function(item) {
-			var self = this;
-			function pushOneRaphaelVector(it){
-				var i;
-				if (it.type === 'set') {
-					for (i=0; i< it.length; i++) {
-						pushOneRaphaelVector(it[i]);
-					}
-				} else {
-					self.node.appendChild(it.node);
-					self.set.push(it);
-				}
-			}
-			pushOneRaphaelVector(item)
+			this.pushOneRaphaelVector(item);
 			return this;
 		},
 		translate: function(newTranslateX, newTranslateY) {
@@ -86,42 +110,16 @@ if (!Array.isArray) {
 		getBBox: function() {
 			return this.set.getBBox();
 		},
-		draggable: function(){
-			var lx = 0;
-			var ly = 0;
-			var ox = 0;
-			var oy = 0;
-			var self = this;
-			
-			function onMove(dx, dy){
-				lx = (dx * self.dragSpeed) + ox;
-				ly = (dy * self.dragSpeed) + oy;
-				self.translate(lx, ly);
-			}
-			function onStart(){
-				if(self.node.hasAttribute('transform')){
-					var transform = self.node.getAttribute('transform').match(/translate\(([^)]*)\)/);
-					if(transform && transform[1] !== undefined){
-						var t = transform[1].split(' ');
-						ox = parseInt(t[0]);
-						oy = parseInt(t[1]);
-					}
-				}
-			}
-			function onEnd(){
-				ox = lx;
-				oy = ly;
-			}
-			
-			this.set.drag(onMove, onStart, onEnd);
+		draggable: function() {
+			this.set.drag(this.onMove, this.onStart, this.onEnd);
 			return this;
 		}
 	};
 	
-	Raphael.fn.group = function(/*items:[]*, config:{}*/){
-		var hasItems  = Array.isArray(arguments[0]);
-		var config    = hasItems ? {} : arguments[0];
-		var items     = arguments[hasItems ? 0 : 1];
+	Raphael.fn.group = function(/*items:[]*, config:{}*/) {
+		var hasItems = Array.isArray(arguments[0]);
+		var config   = hasItems ? {} : arguments[0];
+		var items    = arguments[hasItems ? 0 : 1];
 		
 		return new Group(this, items);
 	};
