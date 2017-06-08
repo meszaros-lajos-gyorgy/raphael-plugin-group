@@ -8,7 +8,7 @@ const rotateRegex = /rotate\([^)]*\)/
 const translateRegex = /translate\([^)]*\)/
 
 function adjustTransform (compareRegex, replacementString, transformString) {
-  var value = ''
+  let value = ''
 
   if (!transformString) {
     value = replacementString
@@ -20,6 +20,8 @@ function adjustTransform (compareRegex, replacementString, transformString) {
 
   return value
 }
+
+// -----------------
 
 function updateScale (privates, scaleX, scaleY) {
   const transform = this.node.getAttribute('transform')
@@ -75,10 +77,10 @@ function pushOneRaphaelVector (privates, item) {
 
 // -----------------
 
-var _ = new WeakMap()
+const _ = new WeakMap()
 
 function Group (raphael, items) {
-  var group = raphael.raphael.vml ? document.createElement('group') : document.createElementNS('http://www.w3.org/2000/svg', 'g')
+  const group = raphael.raphael.vml ? document.createElement('group') : document.createElementNS('http://www.w3.org/2000/svg', 'g')
   raphael.canvas.appendChild(group)
 
   this.set = raphael.set(items)
@@ -86,7 +88,7 @@ function Group (raphael, items) {
   this.node = group
   this.type = 'group'
 
-  var privates = {
+  const privates = {
     lx: 0,
     ly: 0,
     ox: 0,
@@ -105,25 +107,22 @@ function Group (raphael, items) {
 
 Group.prototype = {
   scale: function (newScaleX, newScaleY) {
-    var privates = _.get(this)
-    if (newScaleY === undefined) {
-      newScaleY = newScaleX
-    }
-    privates.updateScale(newScaleX, newScaleY)
+    const privates = _.get(this)
+    privates.updateScale(newScaleX, newScaleY === undefined ? newScaleX : newScaleY)
     return this
   },
   rotate: function (deg) {
-    var privates = _.get(this)
+    const privates = _.get(this)
     privates.updateRotation(deg)
     return this
   },
   translate: function (newTranslateX, newTranslateY) {
-    var privates = _.get(this)
+    const privates = _.get(this)
     privates.updateTranslation(newTranslateX, newTranslateY)
     return this
   },
   push: function (item) {
-    var privates = _.get(this)
+    const privates = _.get(this)
     privates.pushOneRaphaelVector(item)
     return this
   },
@@ -131,7 +130,7 @@ Group.prototype = {
     return this.set.getBBox()
   },
   draggable: function () {
-    var privates = _.get(this)
+    const privates = _.get(this)
     this.set.drag(privates.onMove, privates.onStart, privates.onEnd)
     return this
   }

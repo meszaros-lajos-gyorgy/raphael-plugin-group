@@ -16,7 +16,7 @@ This is an updated version of the Raphael.group.js plugin. It adds support for m
 
 These are plugins I've created for the RaphaelJS library (~~[http://raphaeljs.com/](http://raphaeljs.com/)~~ => https://github.com/DmitryBaranovskiy/raphael) for my own personal use. Feel free to use them as well.
 
-## Update!
+## Update
 
 If you don't need to worry about IE8 (or below) users, then I suggest you to migrate over to the newer SnapSVG library,
 which is more lightweight, produced by the same author, has a similar syntax and has all the features of SVG covered, that was missing from RaphaelJS, including groups.
@@ -31,4 +31,4 @@ It only supports features, which are present in both SVG and VML, and grouping i
 
 ## Requirements
 
-Though **raphael.group.js** may work in a browser as old as IE8, it uses some Javascript features, which might not be supported by that browser. For this purpose a separate **polyfills.js** can be included among the plugins to patch up old browsers.
+Though **raphael.group.js** may work in a browser as old as IE8, it uses some Javascript features, which might not be supported by that browser. For this purpose a separate **polyfills.js** can be included among the plugins as a patch.
