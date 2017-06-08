@@ -1,0 +1,66 @@
+{
+  "title": "Group plugin for RaphaelJS",
+  "name": "raphael-plugin-group",
+  "version": "0.0.0-development",
+  "description": "raphael-plugin-group",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "rollup -c",
+    "build:watch": "npm run build -- --watch",
+    "unit": "mocha --require reify test/**/*.spec.js",
+    "unit:watch": "npm run unit -- --watch",
+    "watch": "npm-run-all --parallel build:watch examples:watch",
+    "examples:watch": "nodemon ./examples/server.js -e js,json,html,css --watch examples --watch dist/*.min.js",
+    "lint": "standard --verbose --fix src/**/*.js",
+    "stage-after-lint": "git add src",
+    "test": "npm run lint && npm run unit",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "commit": "git-cz",
+    "commit:again": "git-cz --retry",
+    "dist:clean": "rimraf dist || true",
+    "dist:stage": "git add dist --force -u",
+    "workspace:save": "stash-to-branch --save",
+    "workspace:restore": "stash-to-branch --restore"
+  },
+  "pre-commit": [
+    "test",
+    "stage-after-lint",
+    "dist:clean",
+    "build",
+    "dist:stage"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meszaros-lajos-gyorgy/raphael-plugin-group.git"
+  },
+  "author": "Lajos Meszaros <m_lajos@hotmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/meszaros-lajos-gyorgy/raphael-plugin-group/issues"
+  },
+  "homepage": "https://github.com/meszaros-lajos-gyorgy/raphael-plugin-group#readme",
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "cz-conventional-changelog": "^2.0.0",
+    "express": "^4.15.3",
+    "mocha": "^3.4.2",
+    "nodemon": "^1.11.0",
+    "npm-run-all": "^4.0.2",
+    "pre-commit": "^1.2.2",
+    "reify": "^0.11.22",
+    "reload": "^1.1.5",
+    "rimraf": "^2.6.1",
+    "rollup": "^0.42.0",
+    "rollup-plugin-buble": "^0.15.0",
+    "rollup-plugin-uglify": "^2.0.1",
+    "rollup-watch": "^4.0.0",
+    "semantic-release": "^6.3.6",
+    "standard": "^10.0.2",
+    "stash-to-branch": "^1.0.4"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>RaphaelJS Group plugin example</title>
+	<meta charset="utf-8" />
+	
+	<link rel="stylesheet" href="style.css" />
+	
+	<script src="http://dmitrybaranovskiy.github.io/raphael/raphael.js"></script>
+</head>
+<body>
+	<h1>Demo of <a href="https://github.com/meszaros-lajos-gyorgy/Raphael-Plugins">RaphaelJS Group plugin</a></h1>
+	<div id="nav">
+		<button id="decrease-size">- | shrink</button>
+		<button id="increase-size">+ | grow</button>
+		|
+		<button id="rotate-counter-clockwise">&lt; | rotate counter-clockwise</button>
+		<button id="rotate-clockwise">&gt; | rotate clockwise</button>
+		|
+		<button id="make-it-draggable" autocomplete="off">make it draggable</button>
+		|
+		<button id="decrease-drag-speed" disabled="disabled" autocomplete="off">- | decrease drag speed</button>
+		<button id="increase-drag-speed" disabled="disabled" autocomplete="off">+ | increase drag speed</button>
+	</div>
+	<div id="info"></div>
+	<div id="canvas"></div>
+	
+	<!-- script:live-reload -->
+	<script src="../../dist/polyfills.js"></script>
+	<script src="../../dist/raphael.group.js"></script>
+	<script src="utils.js"></script>
+	<script src="script.js"></script>
+</body>
+</html>
