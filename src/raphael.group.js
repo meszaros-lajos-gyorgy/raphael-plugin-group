@@ -3,53 +3,41 @@
 // TODO: fix transformation for VML
 // VML documentation: https://www.w3.org/TR/NOTE-VML
 
-function updateScale (privates, scaleX, scaleY) {
-  var transform = this.node.getAttribute('transform')
+const scaleRegex = /scale\([^)]*\)/
+const rotateRegex = /rotate\([^)]*\)/
+const translateRegex = /translate\([^)]*\)/
 
+function adjustTransform (compareRegex, replacementString, transformString) {
   var value = ''
-  var scaleString = `scale(${scaleX} ${scaleY})`
 
-  if (!transform) {
-    value = scaleString
-  } else if (!transform.includes('scale(')) {
-    value = transform + ' ' + scaleString
+  if (!transformString) {
+    value = replacementString
+  } else if (!compareRegex.test(transformString)) {
+    value = transformString + ' ' + replacementString
   } else {
-    value = transform.replace(/scale\(-?[0-9]*?\.?[0-9]*? -?[0-9]*?\.?[0-9]*?\)/, scaleString)
+    value = transformString.replace(compareRegex, replacementString)
   }
+
+  return value
+}
+
+function updateScale (privates, scaleX, scaleY) {
+  const transform = this.node.getAttribute('transform')
+  const value = adjustTransform(scaleRegex, `scale(${scaleX} ${scaleY})`, transform)
 
   this.node.setAttribute('transform', value)
 }
 
 function updateRotation (privates, rotation) {
-  var transform = this.node.getAttribute('transform')
-
-  var value = ''
-  var rotateString = `rotate(${rotation})`
-
-  if (!transform) {
-    value = rotateString
-  } else if (!transform.includes('rotate(')) {
-    value = transform + ' ' + rotateString
-  } else {
-    value = transform.replace(/rotate\(-?[0-9]+(\.[0-9][0-9]*)?\)/, rotateString)
-  }
+  const transform = this.node.getAttribute('transform')
+  const value = adjustTransform(rotateRegex, `rotate(${rotation})`, transform)
 
   this.node.setAttribute('transform', value)
 }
 
 function updateTranslation (privates, x, y) {
-  var transform = this.node.getAttribute('transform')
-
-  var value = ''
-  var translateString = `translate(${x} ${y})`
-
-  if (!transform) {
-    value = translateString
-  } else if (!transform.includes('translate(')) {
-    value = transform + ' ' + translateString
-  } else {
-    value = transform.replace(/translate\(-?[0-9]*?\.?[0-9]*? -?[0-9]*?\.?[0-9]*?\)/, translateString)
-  }
+  const transform = this.node.getAttribute('transform')
+  const value = adjustTransform(translateRegex, `translate(${x} ${y})`, transform)
 
   this.node.setAttribute('transform', value)
 }
@@ -62,11 +50,11 @@ function onMove (privates, dx, dy) {
 
 function onStart (privates) {
   if (this.node.hasAttribute('transform')) {
-    var transform = this.node.getAttribute('transform').match(/translate\(([^)]*)\)/)
+    let transform = this.node.getAttribute('transform').match(/translate\(([^)]*)\)/)
     if (transform && transform[1] !== undefined) {
-      var [x, y] = transform[1].split(' ')
-      privates.ox = parseInt(x)
-      privates.oy = parseInt(y)
+      const [x, y] = transform[1].split(' ').map(num => parseFloat(num))
+      privates.ox = x
+      privates.oy = y
     }
   }
 }
