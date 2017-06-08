@@ -24,24 +24,36 @@ function adjustTransform (compareRegex, replacementString, transformString) {
 // -----------------
 
 function updateScale (privates, scaleX, scaleY) {
-  const transform = this.node.getAttribute('transform')
-  const value = adjustTransform(scaleRegex, `scale(${scaleX} ${scaleY})`, transform)
+  if (privates.isVML) {
 
-  this.node.setAttribute('transform', value)
+  } else {
+    const transform = this.node.getAttribute('transform')
+    const value = adjustTransform(scaleRegex, `scale(${scaleX} ${scaleY})`, transform)
+
+    this.node.setAttribute('transform', value)
+  }
 }
 
 function updateRotation (privates, rotation) {
-  const transform = this.node.getAttribute('transform')
-  const value = adjustTransform(rotateRegex, `rotate(${rotation})`, transform)
+  if (privates.isVML) {
 
-  this.node.setAttribute('transform', value)
+  } else {
+    const transform = this.node.getAttribute('transform')
+    const value = adjustTransform(rotateRegex, `rotate(${rotation})`, transform)
+
+    this.node.setAttribute('transform', value)
+  }
 }
 
 function updateTranslation (privates, x, y) {
-  const transform = this.node.getAttribute('transform')
-  const value = adjustTransform(translateRegex, `translate(${x} ${y})`, transform)
+  if (privates.isVML) {
 
-  this.node.setAttribute('transform', value)
+  } else {
+    const transform = this.node.getAttribute('transform')
+    const value = adjustTransform(translateRegex, `translate(${x} ${y})`, transform)
+
+    this.node.setAttribute('transform', value)
+  }
 }
 
 function onMove (privates, dx, dy) {
@@ -80,7 +92,33 @@ function pushOneRaphaelVector (privates, item) {
 const _ = new WeakMap()
 
 function Group (raphael, items) {
-  const group = raphael.raphael.vml ? document.createElement('group') : document.createElementNS('http://www.w3.org/2000/svg', 'g')
+  const privates = {
+    lx: 0,
+    ly: 0,
+    ox: 0,
+    oy: 0,
+    isVML: raphael.raphael.vml
+  }
+
+  let group
+
+  if (privates.isVML) {
+    group = document.createElement('rvml:group')
+
+    /*
+    group.style.behavior = 'url(#default#VML)';
+    group.style.position = 'absolute';
+    group.style.filter = '';
+    group.style.width = '100px';
+    group.style.height = '100px';
+    group.style.top = '0px';
+    group.style.left = '0px';
+    group.className = 'rvml';
+    */
+  } else {
+    group = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+  }
+
   raphael.canvas.appendChild(group)
 
   this.set = raphael.set(items)
@@ -88,12 +126,6 @@ function Group (raphael, items) {
   this.node = group
   this.type = 'group'
 
-  const privates = {
-    lx: 0,
-    ly: 0,
-    ox: 0,
-    oy: 0
-  }
   privates.onMove = onMove.bind(this, privates)
   privates.onStart = onStart.bind(this, privates)
   privates.onEnd = onEnd.bind(this, privates)
