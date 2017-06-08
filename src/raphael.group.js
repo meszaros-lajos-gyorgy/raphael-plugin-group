@@ -7,11 +7,11 @@ function updateScale (privates, scaleX, scaleY) {
   var transform = this.node.getAttribute('transform')
 
   var value = ''
-  var scaleString = 'scale(' + scaleX + ' ' + scaleY + ')'
+  var scaleString = `scale(${scaleX} ${scaleY})`
 
   if (!transform) {
     value = scaleString
-  } else if (transform.indexOf('scale(') === -1) {
+  } else if (!transform.includes('scale(')) {
     value = transform + ' ' + scaleString
   } else {
     value = transform.replace(/scale\(-?[0-9]*?\.?[0-9]*? -?[0-9]*?\.?[0-9]*?\)/, scaleString)
@@ -24,11 +24,11 @@ function updateRotation (privates, rotation) {
   var transform = this.node.getAttribute('transform')
 
   var value = ''
-  var rotateString = 'rotate(' + rotation + ')'
+  var rotateString = `rotate(${rotation})`
 
   if (!transform) {
     value = rotateString
-  } else if (transform.indexOf('rotate(') === -1) {
+  } else if (!transform.includes('rotate(')) {
     value = transform + ' ' + rotateString
   } else {
     value = transform.replace(/rotate\(-?[0-9]+(\.[0-9][0-9]*)?\)/, rotateString)
@@ -41,11 +41,11 @@ function updateTranslation (privates, x, y) {
   var transform = this.node.getAttribute('transform')
 
   var value = ''
-  var translateString = 'translate(' + x + ' ' + y + ')'
+  var translateString = `translate(${x} ${y})`
 
   if (!transform) {
     value = translateString
-  } else if (transform.indexOf('translate(') === -1) {
+  } else if (!transform.includes('translate(')) {
     value = transform + ' ' + translateString
   } else {
     value = transform.replace(/translate\(-?[0-9]*?\.?[0-9]*? -?[0-9]*?\.?[0-9]*?\)/, translateString)
@@ -64,9 +64,9 @@ function onStart (privates) {
   if (this.node.hasAttribute('transform')) {
     var transform = this.node.getAttribute('transform').match(/translate\(([^)]*)\)/)
     if (transform && transform[1] !== undefined) {
-      var t = transform[1].split(' ')
-      privates.ox = parseInt(t[0])
-      privates.oy = parseInt(t[1])
+      var [x, y] = transform[1].split(' ')
+      privates.ox = parseInt(x)
+      privates.oy = parseInt(y)
     }
   }
 }
@@ -77,11 +77,8 @@ function onEnd (privates) {
 }
 
 function pushOneRaphaelVector (privates, item) {
-  var i
   if (item.type === 'set') {
-    for (i = 0; i < item.length; i++) {
-      pushOneRaphaelVector.apply(this, [privates, item[i]])
-    }
+    item.forEach(node => pushOneRaphaelVector.apply(this, [privates, node]))
   } else {
     this.node.appendChild(item.node)
     this.set.push(item)
