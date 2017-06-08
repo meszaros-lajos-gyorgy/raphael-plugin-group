@@ -47,7 +47,8 @@ function updateRotation (privates, rotation) {
 
 function updateTranslation (privates, x, y) {
   if (privates.isVML) {
-
+    this.node.style.left = x + 'px'
+    this.node.style.top = y + 'px'
   } else {
     const transform = this.node.getAttribute('transform')
     const value = adjustTransform(translateRegex, `translate(${x} ${y})`, transform)
