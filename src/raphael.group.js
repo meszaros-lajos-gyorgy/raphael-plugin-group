@@ -23,7 +23,7 @@ function adjustTransform (compareRegex, replacementString, transformString) {
 
 // -----------------
 
-function updateScale (self, privates, scaleX, scaleY) {
+const updateScale = (self, privates, scaleX, scaleY) => {
   if (privates.isVML) {
 
   } else {
@@ -34,7 +34,7 @@ function updateScale (self, privates, scaleX, scaleY) {
   }
 }
 
-function updateRotation (self, privates, rotation) {
+const updateRotation = (self, privates, rotation) => {
   if (privates.isVML) {
 
   } else {
@@ -45,7 +45,7 @@ function updateRotation (self, privates, rotation) {
   }
 }
 
-function updateTranslation (self, privates, x, y) {
+const updateTranslation = (self, privates, x, y) => {
   if (privates.isVML) {
     self.node.style.left = x + 'px'
     self.node.style.top = y + 'px'
@@ -57,13 +57,13 @@ function updateTranslation (self, privates, x, y) {
   }
 }
 
-function onMove (self, privates, dx, dy) {
+const onMove = (self, privates, dx, dy) => {
   privates.lx = (dx * self.dragSpeed) + privates.ox
   privates.ly = (dy * self.dragSpeed) + privates.oy
   self.translate(privates.lx, privates.ly)
 }
 
-function onStart (self, privates) {
+const onStart = (self, privates) => {
   if (self.node.hasAttribute('transform')) {
     let transform = self.node.getAttribute('transform').match(/translate\(([^)]*)\)/)
     if (transform && transform[1] !== undefined) {
@@ -74,12 +74,12 @@ function onStart (self, privates) {
   }
 }
 
-function onEnd (privates) {
+const onEnd = (self, privates) => {
   privates.ox = privates.lx
   privates.oy = privates.ly
 }
 
-function pushOneRaphaelVector (self, privates, item) {
+const pushOneRaphaelVector = (self, privates, item) => {
   if (item.type === 'set') {
     item.forEach(node => pushOneRaphaelVector(self, privates, node))
   } else {
