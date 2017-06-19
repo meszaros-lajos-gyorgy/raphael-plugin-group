@@ -23,7 +23,7 @@ function adjustTransform (compareRegex, replacementString, transformString) {
 
 // -----------------
 
-const updateScale = (self, privates, scaleX, scaleY) => {
+const updateScale = (self, privates) => (scaleX, scaleY) => {
   if (privates.isVML) {
 
   } else {
@@ -34,7 +34,7 @@ const updateScale = (self, privates, scaleX, scaleY) => {
   }
 }
 
-const updateRotation = (self, privates, rotation) => {
+const updateRotation = (self, privates) => (rotation) => {
   if (privates.isVML) {
 
   } else {
@@ -45,7 +45,7 @@ const updateRotation = (self, privates, rotation) => {
   }
 }
 
-const updateTranslation = (self, privates, x, y) => {
+const updateTranslation = (self, privates) => (x, y) => {
   if (privates.isVML) {
     self.node.style.left = x + 'px'
     self.node.style.top = y + 'px'
@@ -57,13 +57,13 @@ const updateTranslation = (self, privates, x, y) => {
   }
 }
 
-const onMove = (self, privates, dx, dy) => {
+const onMove = (self, privates) => (dx, dy) => {
   privates.lx = (dx * self.dragSpeed) + privates.ox
   privates.ly = (dy * self.dragSpeed) + privates.oy
   self.translate(privates.lx, privates.ly)
 }
 
-const onStart = (self, privates) => {
+const onStart = (self, privates) => () => {
   if (self.node.hasAttribute('transform')) {
     let transform = self.node.getAttribute('transform').match(/translate\(([^)]*)\)/)
     if (transform && transform[1] !== undefined) {
@@ -74,14 +74,14 @@ const onStart = (self, privates) => {
   }
 }
 
-const onEnd = (self, privates) => {
+const onEnd = (self, privates) => () => {
   privates.ox = privates.lx
   privates.oy = privates.ly
 }
 
-const pushOneRaphaelVector = (self, privates, item) => {
+const pushOneRaphaelVector = (self, privates) => (item) => {
   if (item.type === 'set') {
-    item.forEach(node => pushOneRaphaelVector(self, privates, node))
+    item.forEach(pushOneRaphaelVector(self, privates))
   } else {
     self.node.appendChild(item.node)
     self.set.push(item)
@@ -128,13 +128,13 @@ class Group {
     this.node = group
     this.type = 'group'
 
-    privates.onMove = onMove.bind(null, this, privates)
-    privates.onStart = onStart.bind(null, this, privates)
-    privates.onEnd = onEnd.bind(null, this, privates)
-    privates.pushOneRaphaelVector = pushOneRaphaelVector.bind(null, this, privates)
-    privates.updateScale = updateScale.bind(null, this, privates)
-    privates.updateRotation = updateRotation.bind(null, this, privates)
-    privates.updateTranslation = updateTranslation.bind(null, this, privates)
+    privates.onMove = onMove(this, privates)
+    privates.onStart = onStart(this, privates)
+    privates.onEnd = onEnd(this, privates)
+    privates.pushOneRaphaelVector = pushOneRaphaelVector(this, privates)
+    privates.updateScale = updateScale(this, privates)
+    privates.updateRotation = updateRotation(this, privates)
+    privates.updateTranslation = updateTranslation(this, privates)
 
     _.set(this, privates)
   }
