@@ -23,8 +23,7 @@ function adjustTransform (compareRegex, replacementString, transformString) {
 
 // -----------------
 
-function updateScale (privates, scaleX, scaleY) {
-  const self = this
+function updateScale (self, privates, scaleX, scaleY) {
   if (privates.isVML) {
 
   } else {
@@ -35,8 +34,7 @@ function updateScale (privates, scaleX, scaleY) {
   }
 }
 
-function updateRotation (privates, rotation) {
-  const self = this
+function updateRotation (self, privates, rotation) {
   if (privates.isVML) {
 
   } else {
@@ -47,8 +45,7 @@ function updateRotation (privates, rotation) {
   }
 }
 
-function updateTranslation (privates, x, y) {
-  const self = this
+function updateTranslation (self, privates, x, y) {
   if (privates.isVML) {
     self.node.style.left = x + 'px'
     self.node.style.top = y + 'px'
@@ -60,15 +57,13 @@ function updateTranslation (privates, x, y) {
   }
 }
 
-function onMove (privates, dx, dy) {
-  const self = this
+function onMove (self, privates, dx, dy) {
   privates.lx = (dx * self.dragSpeed) + privates.ox
   privates.ly = (dy * self.dragSpeed) + privates.oy
   self.translate(privates.lx, privates.ly)
 }
 
-function onStart (privates) {
-  const self = this
+function onStart (self, privates) {
   if (self.node.hasAttribute('transform')) {
     let transform = self.node.getAttribute('transform').match(/translate\(([^)]*)\)/)
     if (transform && transform[1] !== undefined) {
@@ -84,10 +79,9 @@ function onEnd (privates) {
   privates.oy = privates.ly
 }
 
-function pushOneRaphaelVector (privates, item) {
-  const self = this
+function pushOneRaphaelVector (self, privates, item) {
   if (item.type === 'set') {
-    item.forEach(node => pushOneRaphaelVector.apply(self, [privates, node]))
+    item.forEach(node => pushOneRaphaelVector(self, privates, node))
   } else {
     self.node.appendChild(item.node)
     self.set.push(item)
@@ -134,35 +128,31 @@ class Group {
     this.node = group
     this.type = 'group'
 
-    privates.onMove = onMove.bind(this, privates)
-    privates.onStart = onStart.bind(this, privates)
-    privates.onEnd = onEnd.bind(this, privates)
-    privates.pushOneRaphaelVector = pushOneRaphaelVector.bind(this, privates)
-    privates.updateScale = updateScale.bind(this, privates)
-    privates.updateRotation = updateRotation.bind(this, privates)
-    privates.updateTranslation = updateTranslation.bind(this, privates)
+    privates.onMove = onMove.bind(null, this, privates)
+    privates.onStart = onStart.bind(null, this, privates)
+    privates.onEnd = onEnd.bind(null, this, privates)
+    privates.pushOneRaphaelVector = pushOneRaphaelVector.bind(null, this, privates)
+    privates.updateScale = updateScale.bind(null, this, privates)
+    privates.updateRotation = updateRotation.bind(null, this, privates)
+    privates.updateTranslation = updateTranslation.bind(null, this, privates)
 
     _.set(this, privates)
   }
 
   scale (newScaleX, newScaleY) {
-    const privates = _.get(this)
-    privates.updateScale(newScaleX, newScaleY === undefined ? newScaleX : newScaleY)
+    _.get(this).updateScale(newScaleX, newScaleY === undefined ? newScaleX : newScaleY)
     return this
   }
   rotate (deg) {
-    const privates = _.get(this)
-    privates.updateRotation(deg)
+    _.get(this).updateRotation(deg)
     return this
   }
   translate (newTranslateX, newTranslateY) {
-    const privates = _.get(this)
-    privates.updateTranslation(newTranslateX, newTranslateY)
+    _.get(this).updateTranslation(newTranslateX, newTranslateY)
     return this
   }
   push (item) {
-    const privates = _.get(this)
-    privates.pushOneRaphaelVector(item)
+    _.get(this).pushOneRaphaelVector(item)
     return this
   }
   getBBox () {
