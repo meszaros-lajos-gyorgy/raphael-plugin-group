@@ -5,10 +5,10 @@ var groupRotationStep = 10;
 var draggable         = false;
 
 var r    = Raphael('canvas', '100%', 500);
-var rect = r.rect(160, 200, 200, 200).attr({fill:'red', stroke:'black', transform: 't100 120r30 0 0s1.1'});
+var rect = r.rect(160, 200, 200, 200).attr({fill:'red', stroke:'black'/*, transform: 't100 120r30 0 0s1.1'*/});
 
 /*
-	//the transform string in rect results in this XML:
+	//the transform string above in rect results in this XML:
 	<?xml:namespace prefix = rvml ns = "urn:schemas-microsoft-com:vml" />
 	<rvml:shape style="POSITION: absolute; FILTER: ; WIDTH: 1px; HEIGHT: 1px; TOP: 0px; BEHAVIOR: url(#default#VML); LEFT: 0px" class=rvml raphael="true" raphaelid="0" coordsize = "21600,21600" filled = "t" fillcolor = "red" stroked = "t" strokecolor = "black" path = " m3456000,4320000 l7776000,4320000,7776000,8640000,3456000,8640000 xe">
 		<rvml:stroke class=rvml opacity = "1" miterlimit = "8"></rvml:stroke>
