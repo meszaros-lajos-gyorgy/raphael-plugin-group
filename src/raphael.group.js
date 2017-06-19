@@ -24,48 +24,53 @@ function adjustTransform (compareRegex, replacementString, transformString) {
 // -----------------
 
 function updateScale (privates, scaleX, scaleY) {
+  const self = this
   if (privates.isVML) {
 
   } else {
-    const transform = this.node.getAttribute('transform')
+    const transform = self.node.getAttribute('transform')
     const value = adjustTransform(scaleRegex, `scale(${scaleX} ${scaleY})`, transform)
 
-    this.node.setAttribute('transform', value)
+    self.node.setAttribute('transform', value)
   }
 }
 
 function updateRotation (privates, rotation) {
+  const self = this
   if (privates.isVML) {
 
   } else {
-    const transform = this.node.getAttribute('transform')
+    const transform = self.node.getAttribute('transform')
     const value = adjustTransform(rotateRegex, `rotate(${rotation})`, transform)
 
-    this.node.setAttribute('transform', value)
+    self.node.setAttribute('transform', value)
   }
 }
 
 function updateTranslation (privates, x, y) {
+  const self = this
   if (privates.isVML) {
-    this.node.style.left = x + 'px'
-    this.node.style.top = y + 'px'
+    self.node.style.left = x + 'px'
+    self.node.style.top = y + 'px'
   } else {
-    const transform = this.node.getAttribute('transform')
+    const transform = self.node.getAttribute('transform')
     const value = adjustTransform(translateRegex, `translate(${x} ${y})`, transform)
 
-    this.node.setAttribute('transform', value)
+    self.node.setAttribute('transform', value)
   }
 }
 
 function onMove (privates, dx, dy) {
-  privates.lx = (dx * this.dragSpeed) + privates.ox
-  privates.ly = (dy * this.dragSpeed) + privates.oy
-  this.translate(privates.lx, privates.ly)
+  const self = this
+  privates.lx = (dx * self.dragSpeed) + privates.ox
+  privates.ly = (dy * self.dragSpeed) + privates.oy
+  self.translate(privates.lx, privates.ly)
 }
 
 function onStart (privates) {
-  if (this.node.hasAttribute('transform')) {
-    let transform = this.node.getAttribute('transform').match(/translate\(([^)]*)\)/)
+  const self = this
+  if (self.node.hasAttribute('transform')) {
+    let transform = self.node.getAttribute('transform').match(/translate\(([^)]*)\)/)
     if (transform && transform[1] !== undefined) {
       const [x, y] = transform[1].split(' ').map(num => parseFloat(num))
       privates.ox = x
@@ -80,11 +85,12 @@ function onEnd (privates) {
 }
 
 function pushOneRaphaelVector (privates, item) {
+  const self = this
   if (item.type === 'set') {
-    item.forEach(node => pushOneRaphaelVector.apply(this, [privates, node]))
+    item.forEach(node => pushOneRaphaelVector.apply(self, [privates, node]))
   } else {
-    this.node.appendChild(item.node)
-    this.set.push(item)
+    self.node.appendChild(item.node)
+    self.set.push(item)
   }
 }
 
