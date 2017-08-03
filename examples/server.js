@@ -4,19 +4,14 @@ const fs = require('fs')
 const http = require('http')
 const path = require('path')
 
+const {
+  projectName
+} = require('../package.json')
+
 const app = express()
 const server = http.createServer(app)
 
-let projectName = ''
-
-fs.readFile(path.join(__dirname, '../package.json'), 'utf8', (err, rawData) => {
-  try{
-    const data = JSON.parse(rawData)
-    projectName = data.name
-  }catch(e){}
-})
-
-reload(server, app)
+reload(app)
 
 const fetchExampleFolders = () => new Promise((resolve, reject) => {
   fs.readdir(__dirname, (err, files) => {
@@ -39,10 +34,6 @@ const fetchExampleFolders = () => new Promise((resolve, reject) => {
   })
 })
 
-app.get('/reload.js', (req, res) => {
-  res.sendFile(path.join(__dirname, '../node_modules/reload/lib/reload-client.js'))
-})
-
 app.get('/', (req, res) => fetchExampleFolders()
   .then(folders => {
     let pages = folders.map(folder => `<li><a href="/${folder}/">${folder}</a></li>`);
@@ -60,7 +51,7 @@ app.get('/', (req, res) => fetchExampleFolders()
 <body>
   <h1>Example uses of "${projectName}"</h1>
   ${pages}
-  <script src="/reload.js"></script>
+  <script src="/reload/reload.js"></script>
 </body>
 </html>`)
     res.end()
@@ -83,7 +74,6 @@ app.use(/^\/\w+\/$/, (req, res, next) => {
         res.writeHead(200, {'Content-Type': 'text/html'})
         res.write(data
           .replace(/"\.\.\/\.\.\/dist\//g, '"/')
-          .replace('<!-- script:live-reload -->', '<script src="/reload.js"></script>')
         )
         res.end()
       })

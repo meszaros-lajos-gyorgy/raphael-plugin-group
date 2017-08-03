@@ -1,3 +1,3 @@
 node_modules/
 npm-debug.log*
-.reify-cache/
+package-lock.json

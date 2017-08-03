@@ -1,7 +1,4 @@
-// raphael-plugin-group - created by Lajos Meszaros <m_lajos@hotmail.com> - MIT licence - last built on 2017-06-19
-(function () {
-'use strict';
-
+// raphael-plugin-group - created by Lajos Meszaros <m_lajos@hotmail.com> - MIT licence - last built on 2017-08-04
 /* eslint-disable */
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind#Polyfill
@@ -88,5 +85,3 @@ if (typeof WeakMap === 'undefined') {
 }
 
 /* eslint-enable */
-
-}());

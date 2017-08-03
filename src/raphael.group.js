@@ -23,6 +23,7 @@ function adjustTransform (compareRegex, replacementString, transformString) {
 
 // -----------------
 
+// TODO: add ramda to clean this up with curry()
 const updateScale = (self, privates) => (scaleX, scaleY) => {
   if (privates.isVML) {
 

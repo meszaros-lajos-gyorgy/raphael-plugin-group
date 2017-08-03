@@ -5,7 +5,7 @@ var groupRotationStep = 10;
 var draggable         = false;
 
 var r    = Raphael('canvas', '100%', 500);
-var rect = r.rect(160, 200, 200, 200).attr({fill:'red', stroke:'black'/*, transform: 't100 120r30 0 0s1.1'*/});
+var square = r.rect(160, 200, 200, 200).attr({fill:'red', stroke:'black'/*, transform: 't100 120r30 0 0s1.1'*/});
 
 /*
 	//the transform string above in rect results in this XML:
@@ -18,7 +18,7 @@ var rect = r.rect(160, 200, 200, 200).attr({fill:'red', stroke:'black'/*, transf
 */
 
 var circ = r.circle(340, 200, 50).attr({fill:'yellow', stroke:'black'});
-var g    = r.group().push(rect).push(circ);
+var g    = r.group().push(square).push(circ);
 
 var i = 10;
 var rectSet = r.set();

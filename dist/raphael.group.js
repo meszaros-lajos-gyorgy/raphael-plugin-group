@@ -1,5 +1,5 @@
-// raphael-plugin-group - created by Lajos Meszaros <m_lajos@hotmail.com> - MIT licence - last built on 2017-06-19
-(function () {
+// raphael-plugin-group - created by Lajos Meszaros <m_lajos@hotmail.com> - MIT licence - last built on 2017-08-04
+var RaphaelGroup = (function (exports) {
 'use strict';
 
 /* global Raphael */
@@ -27,6 +27,7 @@ function adjustTransform (compareRegex, replacementString, transformString) {
 
 // -----------------
 
+// TODO: add ramda to clean this up with curry()
 var updateScale = function (self, privates) { return function (scaleX, scaleY) {
   if (privates.isVML) {
 
@@ -175,4 +176,6 @@ Raphael.fn.group = function (items) {
   return new Group(this, items)
 };
 
-}());
+return exports;
+
+}({}));

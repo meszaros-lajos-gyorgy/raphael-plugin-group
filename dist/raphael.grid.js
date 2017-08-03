@@ -1,5 +1,5 @@
-// raphael-plugin-group - created by Lajos Meszaros <m_lajos@hotmail.com> - MIT licence - last built on 2017-06-19
-(function () {
+// raphael-plugin-group - created by Lajos Meszaros <m_lajos@hotmail.com> - MIT licence - last built on 2017-08-04
+var RaphaelGrid = (function (exports) {
 'use strict';
 
 /* global Raphael */
@@ -35,4 +35,6 @@ Raphael.fn.drawGrid = function (x, y, w, h, wv, hv, color) {
   return this.path(path.join(',')).attr({stroke: color})
 };
 
-}());
+return exports;
+
+}({}));
